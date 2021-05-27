@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,6 +26,7 @@
     }
   </style>
 </head>
+
 <body>
   <fieldset>
     <legend>Error Calculator</legend>
@@ -55,18 +57,113 @@
     <button>Trigger a Global Error</button>
   </section>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({
+      token: "95265ff4980243febd08094d0e13100b"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    TrackJS.track('Testing TrackJS!');
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+        if (secondNum == '0') {
+          throw new DivisionError('Cannot divide a number by 0');
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        console.log('Sadly an error happened friend')
+        console.error(err.name + err.message);
+      }
+
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    let logBtn = errorBtns[0];
+    logBtn.addEventListener('click', () => {
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      console.log(firstNum + " " + operator + " " + secondNum);
+    });
+
+    let errorBtn = errorBtns[1];
+    errorBtn.addEventListener('click', () => {
+      let output = document.querySelector('output');
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      console.error(firstNum + " " + operator + " " + secondNum + " = " + output.innerHTML);
+    });
+    let dirBtn = errorBtns[2];
+    dirBtn.addEventListener('click', () => {
+      console.dir(document.querySelector('#calculate'));
+    });
+    let xmlBtn = errorBtns[3];
+    xmlBtn.addEventListener('click', () => {
+      console.dirxml(document.querySelector('body'));
+    });
+    const label = 'Log Group';
+    let groupBtn = errorBtns[4];
+    groupBtn.addEventListener('click', () => {
+      console.group(label);
+    });
+    let endBtn = errorBtns[5];
+    endBtn.addEventListener('click', () => {
+      console.groupEnd(label);
+    });
+    let tableBtn = errorBtns[6];
+    tableBtn.addEventListener('click', () => {
+      console.table(errorBtns);
+    });
+    let startBtn = errorBtns[7];
+    startBtn.addEventListener('click', () => {
+      console.log('Timer Started!');
+      console.time('Run Time');
+    });
+    let timeEndBtn = errorBtns[8];
+    timeEndBtn.addEventListener('click', () => {
+      console.log('Timer End!')
+      console.timeEnd('Run Time');
+    });
+    let traceBtn = errorBtns[9];
+    traceBtn.addEventListener('click', () => {
+      console.trace();
+    });
+    let globalBtn = errorBtns[10];
+    globalBtn.addEventListener('click', () => {
+      boom;
+      window.onerror();
+    });
+
+    class DivisionError extends Error {
+      constructor(message) {
+        super(message); // (1)
+        this.name = "Division Error: "; // (2)
+      }
+    }
+
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      var string = msg.toLowerCase();
+      var substring = "script error";
+      // if (string.indexOf(substring) > -1) {
+      //   console.error('Script Error: See Browser Console for Detail');
+      // } else {
+      console.log('Sadly an error happened friend')
+      console.error(msg);
+      // }
+
+      return false;
+    };
+
   </script>
 </body>
+
 </html>
