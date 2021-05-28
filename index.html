@@ -73,7 +73,7 @@
         let firstNum = document.querySelector('#first-num').value;
         let secondNum = document.querySelector('#second-num').value;
         let operator = document.querySelector('#operator').value;
-        if (secondNum == '0') {
+        if (secondNum == '0' && operator == '/') {
           throw new DivisionError('Cannot divide a number by 0');
         }
         output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
